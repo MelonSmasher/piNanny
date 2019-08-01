@@ -1,0 +1,6 @@
+*.md
+docker-compose.yml
+.git
+.gitignore
+requirements.txt
+client.py
