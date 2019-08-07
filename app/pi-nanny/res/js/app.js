@@ -1,7 +1,19 @@
 import Hls from "hls.js";
 import io from 'socket.io-client';
 
-var temp = new RadialGauge({
+/**
+ * Connect to SIO server
+ */
+let socket = io();
+/**
+ * Grab the video element
+ */
+let video = document.getElementById('stream');
+
+/**
+ * Create our gauges
+ */
+let temp = new RadialGauge({
     renderTo: 'temp',
     width: 250,
     height: 250,
@@ -48,7 +60,7 @@ var temp = new RadialGauge({
     animationRule: "linear"
 }).draw();
 
-var pressure = new RadialGauge({
+let pressure = new RadialGauge({
     renderTo: 'pressure',
     width: 250,
     height: 250,
@@ -100,7 +112,7 @@ var pressure = new RadialGauge({
     animationRule: "linear"
 }).draw();
 
-var iaq = new RadialGauge({
+let iaq = new RadialGauge({
     renderTo: 'iaq',
     width: 250,
     height: 250,
@@ -162,7 +174,7 @@ var iaq = new RadialGauge({
     animationRule: "linear"
 }).draw();
 
-var humidity = new RadialGauge({
+let humidity = new RadialGauge({
     renderTo: 'humidity',
     width: 250,
     height: 250,
@@ -213,22 +225,9 @@ var humidity = new RadialGauge({
     animationRule: "linear"
 }).draw();
 
-if (Hls.isSupported()) {
-    let video = document.getElementById('stream');
-    let hls = new Hls();
-    hls.loadSource('/images/stream/live.m3u8');
-    hls.attachMedia(video);
-    hls.on(Hls.Events.MANIFEST_PARSED, function () {
-        video.play();
-    });
-} else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-    video.src = '/images/stream/live.m3u8';
-    video.addEventListener('canplay', function () {
-        video.play();
-    });
-}
-
-let socket = io();
+/**
+ * Pass BME680 sensor data to our gauges when it's obtained from SIO
+ */
 socket.on('SensorData', function (data) {
     temp.update({value: data.temperature_f});
     pressure.update({value: data.pressure});
@@ -236,3 +235,24 @@ socket.on('SensorData', function (data) {
     humidity.update({value: data.humidity});
     console.log(data);
 });
+
+/**
+ * If HLS is supported use the HLS library
+ */
+if (Hls.isSupported()) {
+    let hls = new Hls();
+    hls.loadSource('/images/stream/live.m3u8');
+    hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED, function () {
+        video.play();
+    });
+}
+/**
+ * If the HLS library is not supported but we can natively play the HLS stream set the video element source
+ */
+else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = '/images/stream/live.m3u8';
+    video.addEventListener('canplay', function () {
+        video.play();
+    });
+}
