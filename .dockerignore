@@ -2,5 +2,9 @@
 docker-compose.yml
 .git
 .gitignore
-requirements.txt
-client.py
+*.m4s
+*.m4s.*
+*.mpd
+node_modules/
+dist/
+.idea/

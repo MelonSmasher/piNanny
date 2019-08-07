@@ -1,0 +1,25 @@
+body {
+    background: #f5f8fa;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    padding-bottom: 70px;
+}
+
+a {
+    color: #00B7FF;
+}
+
+video {
+    width: 640px;
+    height: 360px;
+}
+
+.center-div {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.pad-bar {
+    color: aliceblue;
+    margin-bottom: 25px;
+}

@@ -1,0 +1,48 @@
+FROM balenalib/%%BALENA_ARCH%%-ubuntu-node:12-bionic
+WORKDIR /usr/src/app
+
+RUN apt-get update && install_packages software-properties-common linux-headers-$(uname -r) build-essential
+RUN add-apt-repository ppa:ubuntu-raspi2/ppa && add-apt-repository ppa:ubuntu-pi-flavour-makers/ppa && apt-get update
+RUN install_packages \
+        liblivemedia-dev \
+        liblog4cpp5-dev \
+        libasound2-dev \
+        libalsaplayer-dev \
+        libclalsadrv-dev \
+        libdssialsacompat-dev \
+        libv4l-dev \
+        libvpx-dev \
+        libx265-dev \
+        libx264-dev \
+        libjpeg-dev \
+        ffmpeg \
+        htop \
+        curl \
+        supervisor \
+        libraspberrypi0 \
+        libraspberrypi-dev \
+        libraspberrypi-bin \
+        alsa-utils \
+        alsa-tools \
+        v4l-utils \
+        python3 \
+        python3-pip \
+        python3-smbus
+
+COPY app/conf/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY app/conf/supervisor/nodeServer.conf /etc/supervisor/conf.d/nodeServer.conf
+COPY app/conf/supervisor/camStream.conf /etc/supervisor/conf.d/camStream.conf
+COPY app/conf/supervisor/bmeSensor.conf /etc/supervisor/conf.d/bmeSensor.conf
+COPY app/conf/pip/pip.conf /etc/pip.conf
+COPY app/envSensorBme680.py envSensorBme680.py
+COPY app/pi-nanny pi-nanny
+COPY app/entrypoint.sh entrypoint.sh
+COPY app/camStream.sh camStream.sh
+
+RUN pip3 install --no-cache-dir bme680 python-socketio[client]
+
+RUN cd /usr/src/app/pi-nanny && yarn --prod && \
+        rm -rf /var/lib/apt/lists/* /usr/src/linux-headers* && \
+        mkdir -p /var/log/supervisor;
+
+CMD ["./entrypoint.sh"]
