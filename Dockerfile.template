@@ -16,8 +16,6 @@ RUN install_packages \
         libx264-dev \
         libjpeg-dev \
         ffmpeg \
-        htop \
-        curl \
         supervisor \
         libraspberrypi0 \
         libraspberrypi-dev \

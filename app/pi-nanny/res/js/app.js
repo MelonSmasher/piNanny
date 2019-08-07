@@ -14,9 +14,10 @@ var temp = new RadialGauge({
         "40",
         "60",
         "80",
-        "100"
+        "100",
+        "120"
     ],
-    minorTicks: 2,
+    minorTicks: 10,
     strokeTicks: true,
     highlights: [
         {
@@ -26,11 +27,11 @@ var temp = new RadialGauge({
         },
         {
             "from": 55,
-            "to": 80,
+            "to": 85,
             "color": "rgba(102, 204, 102, .75)"
         },
         {
-            "from": 80,
+            "from": 85,
             "to": 120,
             "color": "rgba(255, 51, 51, .75)"
         }
@@ -53,6 +54,23 @@ var pressure = new RadialGauge({
     units: "hpa/mbar",
     minValue: 960,
     maxValue: 1070,
+    highlights: [
+        {
+            "from": 960,
+            "to": 990,
+            "color": "rgba(188, 189, 189, .75)"
+        },
+        {
+            "from": 990,
+            "to": 1040,
+            "color": "rgba(163, 198, 214, .75)"
+        },
+        {
+            "from": 1040,
+            "to": 1070,
+            "color": "rgba(137, 207, 240, .75)"
+        },
+    ],
     majorTicks: [
         "960",
         "970",
@@ -67,7 +85,68 @@ var pressure = new RadialGauge({
         "1060",
         "1070"
     ],
-    minorTicks: 2,
+    minorTicks: 5,
+    strokeTicks: true,
+    borderShadowWidth: 0,
+    borders: false,
+    needleType: "arrow",
+    needleWidth: 2,
+    needleCircleSize: 7,
+    needleCircleOuter: true,
+    needleCircleInner: false,
+    animationDuration: 1500,
+    animationRule: "linear"
+}).draw();
+
+var iaq = new RadialGauge({
+    renderTo: 'iaq',
+    width: 250,
+    height: 250,
+    units: "iaq index",
+    minValue: 0,
+    maxValue: 500,
+    highlights: [
+        {
+            "from": 0,
+            "to": 50,
+            "color": "rgba(102, 204, 102, .75)"
+        },
+        {
+            "from": 51,
+            "to": 100,
+            "color": "rgba(255, 255, 102, .75)"
+        },
+        {
+            "from": 100,
+            "to": 150,
+            "color": "rgba(255, 153, 51, .75)"
+        },
+        {
+            "from": 150,
+            "to": 200,
+            "color": "rgba(255, 51, 51, .75)"
+        },
+        {
+            "from": 200,
+            "to": 300,
+            "color": "rgba(153, 102, 255, .75)"
+        },
+        {
+            "from": 300,
+            "to": 500,
+            "color": "rgba(153, 0, 51, .75)"
+        }
+    ],
+    majorTicks: [
+        "0",
+        "50",
+        "100",
+        "150",
+        "200",
+        "300",
+        "500"
+    ],
+    minorTicks: 5,
     strokeTicks: true,
     borderShadowWidth: 0,
     borders: false,
@@ -89,13 +168,18 @@ var humidity = new RadialGauge({
     maxValue: 100,
     majorTicks: [
         "0",
+        "10",
         "20",
+        "30",
         "40",
+        "50",
         "60",
+        "70",
         "80",
+        "90",
         "100"
     ],
-    minorTicks: 2,
+    minorTicks: 5,
     strokeTicks: true,
     highlights: [
         {
@@ -143,7 +227,8 @@ if (Hls.isSupported()) {
 let socket = io();
 socket.on('SensorData', function (data) {
     temp.update({value: data.temperature_f});
-    humidity.update({value: data.humidity});
     pressure.update({value: data.pressure});
+    iaq.update({value: data.iaq});
+    humidity.update({value: data.humidity});
     console.log(data);
 });

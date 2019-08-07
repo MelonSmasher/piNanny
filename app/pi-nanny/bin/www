@@ -9,11 +9,6 @@ var app = require('../server');
 var debug = require('debug')('pi-nanny:server');
 var http = require('http');
 
-function convertToF(celsius) {
-    let fahrenheit = celsius * 9 / 5 + 32;
-    return fahrenheit;
-}
-
 /**
  * Get port from environment and store in Express.
  */
@@ -50,7 +45,6 @@ io.on('connection', function (socket) {
     });
     socket.on('SensorReading', function (data) {
         console.log(data);
-        data.temperature_f = convertToF(data.temperature);
         socket.broadcast.emit('SensorData', data)
     });
 });
