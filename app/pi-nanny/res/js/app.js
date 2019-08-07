@@ -17,7 +17,8 @@ var temp = new RadialGauge({
         "100",
         "120"
     ],
-    minorTicks: 10,
+    minorTicks: 5,
+    exactTicks: true,
     strokeTicks: true,
     highlights: [
         {
@@ -86,6 +87,7 @@ var pressure = new RadialGauge({
         "1070"
     ],
     minorTicks: 5,
+    exactTicks: true,
     strokeTicks: true,
     borderShadowWidth: 0,
     borders: false,
@@ -146,7 +148,8 @@ var iaq = new RadialGauge({
         "300",
         "500"
     ],
-    minorTicks: 5,
+    minorTicks: 10,
+    exactTicks: true,
     strokeTicks: true,
     borderShadowWidth: 0,
     borders: false,
@@ -180,6 +183,7 @@ var humidity = new RadialGauge({
         "100"
     ],
     minorTicks: 5,
+    exactTicks: true,
     strokeTicks: true,
     highlights: [
         {
