@@ -1,14 +1,27 @@
 let createError = require('http-errors');
-let express = require('express');
-
+const express = require('express');
+const auth = require('basic-auth');
 let path = require('path');
 let cookieParser = require('cookie-parser');
 let logger = require('morgan');
-
 let indexRouter = require('./routes/index');
-let usersRouter = require('./routes/users');
 
-let app = express();
+const app = express();
+
+// If we have a username and password from env vars
+if (process.env.HTTP_AUTH_USERNAME && process.env.HTTP_AUTH_PASSWORD) {
+// Ensure this is before any other middleware or routes
+    app.use((req, res, next) => {
+        let user = auth(req);
+        if (user === undefined || user['name'] !== process.env.HTTP_AUTH_USERNAME || user['pass'] !== process.env.HTTP_AUTH_PASSWORD) {
+            res.statusCode = 401;
+            res.setHeader('WWW-Authenticate', 'Basic realm="Node"');
+            res.end('Unauthorized');
+        } else {
+            next();
+        }
+    });
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -26,7 +39,6 @@ app.use(function (req, res, next) {
 });
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
