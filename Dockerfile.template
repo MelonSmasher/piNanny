@@ -4,6 +4,7 @@ WORKDIR /usr/src/app
 RUN apt-get update && install_packages software-properties-common linux-headers-$(uname -r) build-essential
 RUN add-apt-repository ppa:ubuntu-raspi2/ppa && add-apt-repository ppa:ubuntu-pi-flavour-makers/ppa && apt-get update
 RUN install_packages \
+        build-essential \
         liblivemedia-dev \
         liblog4cpp5-dev \
         libasound2-dev \
@@ -24,20 +25,28 @@ RUN install_packages \
         alsa-tools \
         v4l-utils \
         python3 \
+        python3-dev \
         python3-pip \
-        python3-smbus
+        python3-smbus \
+        python3-setuptools
 
 COPY app/conf/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY app/conf/supervisor/nodeServer.conf /etc/supervisor/conf.d/nodeServer.conf
 COPY app/conf/supervisor/camStream.conf /etc/supervisor/conf.d/camStream.conf
-COPY app/conf/supervisor/bmeSensor.conf /etc/supervisor/conf.d/bmeSensor.conf
+COPY app/conf/supervisor/bme680Sensor.conf /etc/supervisor/conf.d/bme680Sensor.conf
+#COPY app/conf/supervisor/am2302Sensor.conf /etc/supervisor/conf.d/am2302Sensor.conf
+COPY app/conf/supervisor/cpuSensor.conf /etc/supervisor/conf.d/cpuSensor.conf
 COPY app/conf/pip/pip.conf /etc/pip.conf
 COPY app/envSensorBme680.py envSensorBme680.py
+COPY app/envSensorAm2302.py envSensorAm2302.py
+COPY app/envSensorCpu.py envSensorCpu.py
+COPY app/libpinanny libpinanny
 COPY app/pi-nanny pi-nanny
 COPY app/entrypoint.sh entrypoint.sh
 COPY app/camStream.sh camStream.sh
 
 RUN pip3 install --no-cache-dir bme680 python-socketio[client]
+RUN pip3 install --no-cache-dir --install-option="--force-pi2" Adafruit_DHT
 
 RUN cd /usr/src/app/pi-nanny && yarn --prod && \
         rm -rf /var/lib/apt/lists/* /usr/src/linux-headers* && \

@@ -228,11 +228,19 @@ let humidity = new RadialGauge({
 /**
  * Pass BME680 sensor data to our gauges when it's obtained from SIO
  */
-socket.on('SensorData', function (data) {
-    temp.update({value: data.temperature_f});
+socket.on('SensorDataBme680', function (data) {
+    console.log(data);
     pressure.update({value: data.pressure});
     iaq.update({value: data.iaq});
+    temp.update({value: data.temp_f});
     humidity.update({value: data.humidity});
+});
+
+socket.on('SensorDataAm2302', function (data) {
+    console.log(data);
+});
+
+socket.on('SensorDataCPU', function (data) {
     console.log(data);
 });
 

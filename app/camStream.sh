@@ -10,7 +10,7 @@ rm -rf $base/*
 # fifos seem to work more reliably than pipes - and the fact that the
 # fifo can be named helps ffmpeg guess the format correctly.
 mkfifo live.h264
-raspivid -w ${v4l2_WIDTH} -h ${v4l2_HEIGHT} -fps ${v4l2_FRAME_RATE} -hf -t 86400000 -b ${v4l2_BIT_RATE} -o --inline > live.h264 &
+raspivid -w ${v4l2_WIDTH} -h ${v4l2_HEIGHT} -fps ${v4l2_FRAME_RATE} -t 86400000 -b ${v4l2_BIT_RATE} -o --inline > live.h264 &
 
 # Letting the buffer fill a little seems to help ffmpeg to id the stream
 sleep 2
